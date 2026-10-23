@@ -1,0 +1,19 @@
+{
+  "generator": "Built-in imagegen",
+  "scenes": [
+    {
+      "key": "matching",
+      "prompt": "Use case: photorealistic-natural. A single horizontal 16:9 commercial editorial photograph for a Chinese vehicle export company, matching a restrained professional website. Natural daylight, neutral gray and white palette, subtle burnt orange accents, realistic people and automotive equipment, clean balanced composition, central subject safe for cropping. No readable text, letters, numbers, logos, watermarks, graphic overlays or borders. Scene: two procurement professionals in an orderly vehicle stockyard comparing available modern unbranded passenger cars parked in rows, one holding an abstract checklist tablet, both examining vehicle options. Medium-wide candid photograph showing people and several cars, bright overcast daylight."
+    },
+    {
+      "key": "handover",
+      "prompt": "Use case: photorealistic-natural. A single horizontal 16:9 commercial editorial photograph for a Chinese vehicle export company, matching a restrained professional website. Natural daylight, neutral gray and white palette, subtle burnt orange accents, realistic people and automotive equipment, clean balanced composition, central subject safe for cropping. No readable text, letters, numbers, logos, watermarks, graphic overlays or borders. Scene: a professional vehicle handover at a clean export delivery yard, two staff in smart gray business casual clothes confirming a car key and plain unreadable delivery documents on a clipboard beside a silver unbranded passenger car. Friendly focused consultation, both people and vehicle clearly visible, medium-wide composition."
+    }
+  ],
+  "reused": {
+    "needs": "../../service-advantages/v1/consulting-original.png",
+    "inspection": "../../service-advantages/v1/quality-original.png",
+    "transport": "../../service-advantages/v1/shipping-original.png"
+  },
+  "purpose": "Illustrative service scenes"
+}

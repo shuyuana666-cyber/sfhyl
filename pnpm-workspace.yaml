@@ -1,0 +1,36 @@
+packages:
+  - "apps/*"
+  - "packages/*"
+allowedDeprecatedVersions:
+  are-we-there-yet: "*"
+  sourcemap-codec: "*"
+  lodash.isequal: "*"
+  domexception: "*"
+  w3c-hr-time: "*"
+  inflight: "*"
+  npmlog: "*"
+  rimraf: "*"
+  stable: "*"
+  gauge: "*"
+  abab: "*"
+  glob: "*"
+onlyBuiltDependencies:
+  - "@nestjs/core"
+  - "@parcel/watcher"
+  - "@prisma/client"
+  - "@prisma/engines"
+  - "core-js"
+  - "es5-ext"
+  - "esbuild"
+  - "prisma"
+  - "sharp"
+  - "typeit"
+  - "vue-demi"
+ignoredBuiltDependencies:
+  - "@scarf/scarf"
+  - "@tailwindcss/oxide"
+minimumReleaseAgeExclude:
+  - '@eslint-community/eslint-utils@4.10.1'
+  - baseline-browser-mapping@2.11.1
+  - electron-to-chromium@1.5.395
+  - postcss@8.5.22

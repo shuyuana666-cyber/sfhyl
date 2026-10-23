@@ -1,0 +1,40 @@
+{
+  "backup": "C:\\project\\SFHYL2\\logs\\dev\\service-process-images-2026-10-10T18-19-04-179Z",
+  "assets": [
+    {
+      "scene": "needs",
+      "title": "需求确认",
+      "mediaId": "209",
+      "url": "http://localhost:3002/uploads/2026/10/0f3fd74c-cf71-46ed-9deb-76919aad6170.webp",
+      "thumbnailUrl": "http://localhost:3002/uploads/2026/10/0f3fd74c-cf71-46ed-9deb-76919aad6170.thumb.webp"
+    },
+    {
+      "scene": "matching",
+      "title": "车源匹配",
+      "mediaId": "211",
+      "url": "http://localhost:3002/uploads/2026/10/4f885105-62fa-4f55-a2e8-b6ecf0c80062.webp",
+      "thumbnailUrl": "http://localhost:3002/uploads/2026/10/4f885105-62fa-4f55-a2e8-b6ecf0c80062.thumb.webp"
+    },
+    {
+      "scene": "inspection",
+      "title": "验车与资料",
+      "mediaId": "207",
+      "url": "http://localhost:3002/uploads/2026/10/b1ab5d23-4db1-413d-a3a9-fba11489ded2.webp",
+      "thumbnailUrl": "http://localhost:3002/uploads/2026/10/b1ab5d23-4db1-413d-a3a9-fba11489ded2.thumb.webp"
+    },
+    {
+      "scene": "transport",
+      "title": "跨境运输",
+      "mediaId": "208",
+      "url": "http://localhost:3002/uploads/2026/10/6c6ecb67-a1de-4248-a3bd-b33a4747b403.webp",
+      "thumbnailUrl": "http://localhost:3002/uploads/2026/10/6c6ecb67-a1de-4248-a3bd-b33a4747b403.thumb.webp"
+    },
+    {
+      "scene": "handover",
+      "title": "交付跟进",
+      "mediaId": "212",
+      "url": "http://localhost:3002/uploads/2026/10/70173f6b-fe94-4995-b4bc-c6987e5bc204.webp",
+      "thumbnailUrl": "http://localhost:3002/uploads/2026/10/70173f6b-fe94-4995-b4bc-c6987e5bc204.thumb.webp"
+    }
+  ]
+}

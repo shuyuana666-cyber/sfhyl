@@ -1,0 +1,41 @@
+{
+  "backup": "C:\\project\\SFHYL2\\logs\\dev\\service-advantages-2026-10-10T14-37-28-984Z",
+  "assets": [
+    {
+      "scene": "quality",
+      "key": "quality-assurance",
+      "id": "207",
+      "url": "http://localhost:3002/uploads/2026/10/b1ab5d23-4db1-413d-a3a9-fba11489ded2.webp",
+      "thumbnailUrl": "http://localhost:3002/uploads/2026/10/b1ab5d23-4db1-413d-a3a9-fba11489ded2.thumb.webp",
+      "width": 1200,
+      "height": 675
+    },
+    {
+      "scene": "shipping",
+      "key": "global-shipping",
+      "id": "208",
+      "url": "http://localhost:3002/uploads/2026/10/6c6ecb67-a1de-4248-a3bd-b33a4747b403.webp",
+      "thumbnailUrl": "http://localhost:3002/uploads/2026/10/6c6ecb67-a1de-4248-a3bd-b33a4747b403.thumb.webp",
+      "width": 1200,
+      "height": 675
+    },
+    {
+      "scene": "consulting",
+      "key": "professional-service",
+      "id": "209",
+      "url": "http://localhost:3002/uploads/2026/10/0f3fd74c-cf71-46ed-9deb-76919aad6170.webp",
+      "thumbnailUrl": "http://localhost:3002/uploads/2026/10/0f3fd74c-cf71-46ed-9deb-76919aad6170.thumb.webp",
+      "width": 1200,
+      "height": 675
+    },
+    {
+      "scene": "support",
+      "key": "after-sales",
+      "id": "210",
+      "url": "http://localhost:3002/uploads/2026/10/b59385de-ea18-4488-9e76-dddef4d3b9de.webp",
+      "thumbnailUrl": "http://localhost:3002/uploads/2026/10/b59385de-ea18-4488-9e76-dddef4d3b9de.thumb.webp",
+      "width": 1200,
+      "height": 675
+    }
+  ]
+}

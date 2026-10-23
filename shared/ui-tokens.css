@@ -1,0 +1,54 @@
+/* Shared by the public site and the administration app. */
+:root {
+  --sf-primary: #bd3b0b;
+  --sf-primary-hover: #9d3009;
+  --sf-primary-soft: #fff2eb;
+  --sf-secondary: #344054;
+  --sf-background: #f6f7f9;
+  --sf-surface: #fff;
+  --sf-border: #d6dce4;
+  --sf-divider: #e8ecf1;
+  --sf-text: #182230;
+  --sf-text-secondary: #526071;
+  --sf-muted: #667085;
+  --sf-success: #18734c;
+  --sf-warning: #946200;
+  --sf-error: #b42318;
+  --sf-space-1: 4px;
+  --sf-space-2: 8px;
+  --sf-space-3: 12px;
+  --sf-space-4: 16px;
+  --sf-space-6: 24px;
+  --sf-space-8: 32px;
+  --sf-space-12: 48px;
+  --sf-radius-sm: 4px;
+  --sf-radius-md: 6px;
+  --sf-radius-lg: 8px;
+  --sf-font-caption: 12px;
+  --sf-font-label: 13px;
+  --sf-font-body: 14px;
+  --sf-font-section: 18px;
+  --sf-font-title: 24px;
+  --sf-control-height: 40px;
+  --sf-shadow-overlay: 0 8px 32px rgb(16 24 40 / 12%);
+  --sf-font-family:
+    "Inter", "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+  --sf-duration: 180ms;
+}
+
+.dark {
+  --sf-primary: #f49b73;
+  --sf-primary-hover: #fbb596;
+  --sf-primary-soft: #37251e;
+  --sf-secondary: #d0d5dd;
+  --sf-background: #14181f;
+  --sf-surface: #1c222c;
+  --sf-border: #3b4453;
+  --sf-divider: #2d3543;
+  --sf-text: #f0f3f8;
+  --sf-text-secondary: #bac3d1;
+  --sf-muted: #98a5b8;
+  --sf-success: #78d5a3;
+  --sf-warning: #e8be6b;
+  --sf-error: #f5948e;
+}

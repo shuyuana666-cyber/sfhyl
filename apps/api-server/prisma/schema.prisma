@@ -1,0 +1,966 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+enum AdminUserStatus {
+  ACTIVE
+  DISABLED
+  LOCKED
+}
+
+enum CustomerStatus {
+  ACTIVE
+  DISABLED
+  LOCKED
+}
+
+enum ContentStatus {
+  DRAFT
+  PUBLISHED
+  OFFLINE
+  ARCHIVED
+}
+
+enum VehicleType {
+  NEW
+  USED
+}
+
+enum VehicleSaleStatus {
+  AVAILABLE
+  RESERVED
+  SOLD
+}
+
+enum Currency {
+  CNY
+  USD
+  RUB
+  EUR
+}
+
+enum MileageUnit {
+  KM
+  MI
+}
+
+enum BannerStatus {
+  DRAFT
+  ACTIVE
+  INACTIVE
+}
+
+enum LinkTarget {
+  SAME_TAB
+  NEW_TAB
+}
+
+enum HomepageSectionType {
+  BANNER
+  VEHICLE_SEARCH
+  FEATURED_VEHICLES
+  LATEST_VEHICLES
+  NEW_VEHICLES
+  USED_VEHICLES
+  BRANDS
+  FEATURES
+  ABOUT
+  VIDEO
+  TESTIMONIALS
+  CONTACT
+  CTA
+}
+
+enum FeatureIconType {
+  BUILTIN
+  SVG
+  IMAGE
+}
+
+enum StorageDriver {
+  LOCAL
+  MINIO
+  ALIYUN_OSS
+  TENCENT_COS
+}
+
+enum MediaAssetStatus {
+  ACTIVE
+  ARCHIVED
+}
+
+enum MediaUploadStatus {
+  PROCESSING
+  SUCCEEDED
+  FAILED
+}
+
+enum VehicleMediaType {
+  COVER
+  GALLERY
+  EXTERIOR
+  INTERIOR
+  DETAIL
+  VIDEO
+}
+
+enum InquiryStatus {
+  NEW
+  CONTACTED
+  FOLLOWING
+  QUOTED
+  WON
+  LOST
+  INVALID
+}
+
+enum InquirySource {
+  WEBSITE
+  WHATSAPP
+  MANUAL
+  OTHER
+}
+
+model AdminUser {
+  id                  BigInt          @id @default(autoincrement())
+  username            String          @unique @db.VarChar(64)
+  email               String          @unique @db.VarChar(191)
+  passwordHash        String          @db.VarChar(255)
+  displayName         String?         @db.VarChar(120)
+  avatarUrl           String?         @db.VarChar(1024)
+  status              AdminUserStatus @default(ACTIVE)
+  failedLoginAttempts Int             @default(0)
+  lockedUntil         DateTime?       @db.DateTime(3)
+  lastLoginAt         DateTime?       @db.DateTime(3)
+  passwordChangedAt   DateTime?       @db.DateTime(3)
+  createdAt           DateTime        @default(now()) @db.DateTime(3)
+  updatedAt           DateTime        @updatedAt @db.DateTime(3)
+  deletedAt           DateTime?       @db.DateTime(3)
+
+  roles              AdminUserRole[]
+  refreshTokens      RefreshToken[]
+  loginLogs          LoginLog[]
+  auditLogs          AuditLog[]          @relation("AuditActor")
+  inquiryNotes       InquiryNote[]       @relation("InquiryNoteAuthor")
+  assignedInquiries  InquiryAssignment[] @relation("InquiryAssignee")
+  inquiryAssignments InquiryAssignment[] @relation("InquiryAssignedBy")
+  mediaUploadRecords MediaUploadRecord[] @relation("MediaUploadRecordActor")
+
+  @@index([status, deletedAt])
+  @@map("admin_users")
+}
+
+model Customer {
+  id                  BigInt         @id @default(autoincrement())
+  name                String         @db.VarChar(120)
+  companyName         String?        @db.VarChar(191)
+  phone               String         @unique @db.VarChar(64)
+  email               String         @unique @db.VarChar(191)
+  passwordHash        String         @db.VarChar(255)
+  status              CustomerStatus @default(ACTIVE)
+  failedLoginAttempts Int            @default(0)
+  lockedUntil         DateTime?      @db.DateTime(3)
+  lastLoginAt         DateTime?      @db.DateTime(3)
+  passwordChangedAt   DateTime?      @db.DateTime(3)
+  createdAt           DateTime       @default(now()) @db.DateTime(3)
+  updatedAt           DateTime       @updatedAt @db.DateTime(3)
+  deletedAt           DateTime?      @db.DateTime(3)
+
+  refreshTokens CustomerRefreshToken[]
+  inquiries     Inquiry[]
+
+  @@index([status, deletedAt])
+  @@map("customers")
+}
+
+model CustomerRefreshToken {
+  id           BigInt    @id @default(autoincrement())
+  customerId   BigInt
+  tokenHash    String    @unique @db.Char(64)
+  familyId     String    @db.Char(36)
+  deviceId     String?   @db.VarChar(128)
+  ipAddress    String?   @db.VarChar(45)
+  userAgent    String?   @db.VarChar(1000)
+  expiresAt    DateTime  @db.DateTime(3)
+  revokedAt    DateTime? @db.DateTime(3)
+  revokeReason String?   @db.VarChar(255)
+  replacedById BigInt?
+  createdAt    DateTime  @default(now()) @db.DateTime(3)
+
+  customer   Customer             @relation(fields: [customerId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  replacedBy CustomerRefreshToken? @relation("CustomerRefreshRotation", fields: [replacedById], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  replaces   CustomerRefreshToken[] @relation("CustomerRefreshRotation")
+
+  @@index([customerId, expiresAt])
+  @@index([familyId])
+  @@index([revokedAt])
+  @@map("customer_refresh_tokens")
+}
+
+model Role {
+  id          BigInt    @id @default(autoincrement())
+  code        String    @unique @db.VarChar(64)
+  nameZh      String    @db.VarChar(120)
+  nameEn      String    @db.VarChar(120)
+  description String?   @db.VarChar(500)
+  isSystem    Boolean   @default(false)
+  isEnabled   Boolean   @default(true)
+  createdById BigInt?
+  updatedById BigInt?
+  createdAt   DateTime  @default(now()) @db.DateTime(3)
+  updatedAt   DateTime  @updatedAt @db.DateTime(3)
+  deletedAt   DateTime? @db.DateTime(3)
+
+  users       AdminUserRole[]
+  permissions RolePermission[]
+
+  @@index([isEnabled, deletedAt])
+  @@map("roles")
+}
+
+model Permission {
+  id          BigInt   @id @default(autoincrement())
+  code        String   @unique @db.VarChar(120)
+  module      String   @db.VarChar(64)
+  nameZh      String   @db.VarChar(120)
+  nameEn      String   @db.VarChar(120)
+  description String?  @db.VarChar(500)
+  createdAt   DateTime @default(now()) @db.DateTime(3)
+  updatedAt   DateTime @updatedAt @db.DateTime(3)
+
+  roles RolePermission[]
+
+  @@index([module])
+  @@map("permissions")
+}
+
+model AdminUserRole {
+  adminUserId BigInt
+  roleId      BigInt
+  createdAt   DateTime @default(now()) @db.DateTime(3)
+  createdById BigInt?
+
+  adminUser AdminUser @relation(fields: [adminUserId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  role      Role      @relation(fields: [roleId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@id([adminUserId, roleId])
+  @@index([roleId])
+  @@map("admin_user_roles")
+}
+
+model RolePermission {
+  roleId       BigInt
+  permissionId BigInt
+  createdAt    DateTime @default(now()) @db.DateTime(3)
+  createdById  BigInt?
+
+  role       Role       @relation(fields: [roleId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  permission Permission @relation(fields: [permissionId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@id([roleId, permissionId])
+  @@index([permissionId])
+  @@map("role_permissions")
+}
+
+model RefreshToken {
+  id           BigInt    @id @default(autoincrement())
+  adminUserId  BigInt
+  tokenHash    String    @unique @db.Char(64)
+  familyId     String    @db.Char(36)
+  deviceId     String?   @db.VarChar(128)
+  ipAddress    String?   @db.VarChar(45)
+  userAgent    String?   @db.VarChar(1000)
+  expiresAt    DateTime  @db.DateTime(3)
+  revokedAt    DateTime? @db.DateTime(3)
+  revokeReason String?   @db.VarChar(255)
+  replacedById BigInt?
+  createdAt    DateTime  @default(now()) @db.DateTime(3)
+
+  adminUser  AdminUser      @relation(fields: [adminUserId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  replacedBy RefreshToken?  @relation("RefreshRotation", fields: [replacedById], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  replaces   RefreshToken[] @relation("RefreshRotation")
+
+  @@index([adminUserId, expiresAt])
+  @@index([familyId])
+  @@index([revokedAt])
+  @@map("refresh_tokens")
+}
+
+model LoginLog {
+  id          BigInt   @id @default(autoincrement())
+  adminUserId BigInt?
+  identifier  String   @db.VarChar(191)
+  success     Boolean
+  failureCode String?  @db.VarChar(64)
+  ipAddress   String?  @db.VarChar(45)
+  userAgent   String?  @db.VarChar(1000)
+  requestId   String?  @db.VarChar(64)
+  createdAt   DateTime @default(now()) @db.DateTime(3)
+
+  adminUser AdminUser? @relation(fields: [adminUserId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+
+  @@index([adminUserId, createdAt])
+  @@index([identifier, createdAt])
+  @@index([success, createdAt])
+  @@index([ipAddress, createdAt])
+  @@map("login_logs")
+}
+
+model AuditLog {
+  id            BigInt   @id @default(autoincrement())
+  adminUserId   BigInt?
+  actorName     String?  @db.VarChar(191)
+  module        String?  @db.VarChar(100)
+  action        String   @db.VarChar(64)
+  requestMethod String?  @db.VarChar(10)
+  requestPath   String?  @db.VarChar(2048)
+  resourceType  String   @db.VarChar(100)
+  resourceId    String?  @db.VarChar(100)
+  summary       String?  @db.VarChar(500)
+  beforeData    Json?
+  afterData     Json?
+  ipAddress     String?  @db.VarChar(45)
+  userAgent     String?  @db.VarChar(1000)
+  result        String   @default("SUCCESS") @db.VarChar(20)
+  errorMessage  String?  @db.Text
+  durationMs    Int?
+  requestId     String?  @db.VarChar(64)
+  createdAt     DateTime @default(now()) @db.DateTime(3)
+
+  adminUser AdminUser? @relation("AuditActor", fields: [adminUserId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+
+  @@index([adminUserId, createdAt])
+  @@index([resourceType, resourceId, createdAt])
+  @@index([action, createdAt])
+  @@map("audit_logs")
+}
+
+model SiteSetting {
+  id          BigInt   @id @default(autoincrement())
+  group       String   @db.VarChar(64)
+  key         String   @db.VarChar(100)
+  value       Json
+  description String?  @db.VarChar(500)
+  isPublic    Boolean  @default(false)
+  isSensitive Boolean  @default(false)
+  createdById BigInt?
+  updatedById BigInt?
+  createdAt   DateTime @default(now()) @db.DateTime(3)
+  updatedAt   DateTime @updatedAt @db.DateTime(3)
+
+  @@unique([group, key], name: "group_key")
+  @@index([group, isPublic])
+  @@map("site_settings")
+}
+
+model NavigationItem {
+  id          BigInt     @id @default(autoincrement())
+  parentId    BigInt?
+  key         String     @unique @db.VarChar(100)
+  labelZh     String     @db.VarChar(120)
+  labelEn     String     @db.VarChar(120)
+  labelRu     String?    @db.VarChar(120)
+  href        String     @db.VarChar(1024)
+  target      LinkTarget @default(SAME_TAB)
+  icon        String?    @db.VarChar(100)
+  sortOrder   Int        @default(0)
+  isEnabled   Boolean    @default(true)
+  createdById BigInt?
+  updatedById BigInt?
+  createdAt   DateTime   @default(now()) @db.DateTime(3)
+  updatedAt   DateTime   @updatedAt @db.DateTime(3)
+  deletedAt   DateTime?  @db.DateTime(3)
+
+  parent   NavigationItem?  @relation("NavigationTree", fields: [parentId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  children NavigationItem[] @relation("NavigationTree")
+
+  @@index([parentId, sortOrder])
+  @@index([isEnabled, sortOrder])
+  @@map("navigation_items")
+}
+
+model Page {
+  id             BigInt        @id @default(autoincrement())
+  slug           String        @unique @db.VarChar(191)
+  titleZh        String        @db.VarChar(255)
+  titleEn        String        @db.VarChar(255)
+  titleRu        String?       @db.VarChar(255)
+  summaryZh      String?       @db.Text
+  summaryEn      String?       @db.Text
+  summaryRu      String?       @db.Text
+  content        Json
+  status         ContentStatus @default(DRAFT)
+  publishedAt    DateTime?     @db.DateTime(3)
+  seoTitle       String?       @db.VarChar(255)
+  seoKeywords    String?       @db.VarChar(500)
+  seoDescription String?       @db.VarChar(500)
+  ogMediaId      BigInt?
+  createdById    BigInt?
+  updatedById    BigInt?
+  createdAt      DateTime      @default(now()) @db.DateTime(3)
+  updatedAt      DateTime      @updatedAt @db.DateTime(3)
+  deletedAt      DateTime?     @db.DateTime(3)
+
+  ogMedia MediaAsset? @relation("PageOgMedia", fields: [ogMediaId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+
+  @@index([status, publishedAt])
+  @@index([deletedAt])
+  @@map("pages")
+}
+
+model HomepageSection {
+  id                BigInt              @id @default(autoincrement())
+  key               String              @unique @db.VarChar(100)
+  type              HomepageSectionType
+  titleZh           String?             @db.VarChar(255)
+  titleEn           String?             @db.VarChar(255)
+  titleRu           String?             @db.VarChar(255)
+  subtitleZh        String?             @db.VarChar(500)
+  subtitleEn        String?             @db.VarChar(500)
+  subtitleRu        String?             @db.VarChar(500)
+  descriptionZh     String?             @db.Text
+  descriptionEn     String?             @db.Text
+  descriptionRu     String?             @db.Text
+  backgroundMediaId BigInt?
+  displayCount      Int?
+  sortOrder         Int                 @default(0)
+  isEnabled         Boolean             @default(true)
+  styleKey          String?             @db.VarChar(100)
+  config            Json?
+  createdById       BigInt?
+  updatedById       BigInt?
+  createdAt         DateTime            @default(now()) @db.DateTime(3)
+  updatedAt         DateTime            @updatedAt @db.DateTime(3)
+
+  backgroundMedia MediaAsset?              @relation("HomepageBackgroundMedia", fields: [backgroundMediaId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  recommendations HomepageRecommendation[]
+
+  @@index([isEnabled, sortOrder])
+  @@map("homepage_sections")
+}
+
+model Banner {
+  id             BigInt       @id @default(autoincrement())
+  key            String       @unique @db.VarChar(100)
+  titleZh        String?      @db.VarChar(255)
+  titleEn        String?      @db.VarChar(255)
+  titleRu        String?      @db.VarChar(255)
+  subtitleZh     String?      @db.VarChar(500)
+  subtitleEn     String?      @db.VarChar(500)
+  subtitleRu     String?      @db.VarChar(500)
+  descriptionZh  String?      @db.Text
+  descriptionEn  String?      @db.Text
+  descriptionRu  String?      @db.Text
+  desktopMediaId BigInt?
+  mobileMediaId  BigInt?
+  buttonTextZh   String?      @db.VarChar(120)
+  buttonTextEn   String?      @db.VarChar(120)
+  buttonTextRu   String?      @db.VarChar(120)
+  linkUrl        String?      @db.VarChar(1024)
+  linkTarget     LinkTarget   @default(SAME_TAB)
+  status         BannerStatus @default(DRAFT)
+  startsAt       DateTime?    @db.DateTime(3)
+  endsAt         DateTime?    @db.DateTime(3)
+  sortOrder      Int          @default(0)
+  createdById    BigInt?
+  updatedById    BigInt?
+  createdAt      DateTime     @default(now()) @db.DateTime(3)
+  updatedAt      DateTime     @updatedAt @db.DateTime(3)
+  deletedAt      DateTime?    @db.DateTime(3)
+
+  desktopMedia MediaAsset? @relation("BannerDesktopMedia", fields: [desktopMediaId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  mobileMedia  MediaAsset? @relation("BannerMobileMedia", fields: [mobileMediaId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+
+  @@index([status, sortOrder])
+  @@index([startsAt, endsAt])
+  @@map("banners")
+}
+
+model FeatureItem {
+  id            BigInt          @id @default(autoincrement())
+  key           String          @unique @db.VarChar(100)
+  iconType      FeatureIconType
+  iconName      String?         @db.VarChar(100)
+  svgContent    String?         @db.Text
+  imageMediaId  BigInt?
+  titleZh       String          @db.VarChar(255)
+  titleEn       String          @db.VarChar(255)
+  titleRu       String?         @db.VarChar(255)
+  descriptionZh String?         @db.VarChar(1000)
+  descriptionEn String?         @db.VarChar(1000)
+  descriptionRu String?         @db.VarChar(1000)
+  linkUrl       String?         @db.VarChar(1024)
+  sortOrder     Int             @default(0)
+  isEnabled     Boolean         @default(true)
+  createdById   BigInt?
+  updatedById   BigInt?
+  createdAt     DateTime        @default(now()) @db.DateTime(3)
+  updatedAt     DateTime        @updatedAt @db.DateTime(3)
+  deletedAt     DateTime?       @db.DateTime(3)
+
+  imageMedia MediaAsset? @relation("FeatureImageMedia", fields: [imageMediaId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+
+  @@index([isEnabled, sortOrder])
+  @@map("feature_items")
+}
+
+model HomepageRecommendation {
+  id                BigInt    @id @default(autoincrement())
+  homepageSectionId BigInt
+  vehicleId         BigInt
+  label             String?   @db.VarChar(120)
+  startsAt          DateTime? @db.DateTime(3)
+  endsAt            DateTime? @db.DateTime(3)
+  sortOrder         Int       @default(0)
+  isEnabled         Boolean   @default(true)
+  createdById       BigInt?
+  createdAt         DateTime  @default(now()) @db.DateTime(3)
+
+  homepageSection HomepageSection @relation(fields: [homepageSectionId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  vehicle         Vehicle         @relation(fields: [vehicleId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@unique([homepageSectionId, vehicleId])
+  @@index([homepageSectionId, isEnabled, sortOrder])
+  @@index([startsAt, endsAt])
+  @@index([vehicleId])
+  @@map("homepage_recommendations")
+}
+
+model Brand {
+  id             BigInt    @id @default(autoincrement())
+  nameZh         String    @db.VarChar(120)
+  nameEn         String    @db.VarChar(120)
+  nameRu         String?   @db.VarChar(120)
+  slug           String    @unique @db.VarChar(191)
+  logoMediaId    BigInt?
+  country        String?   @db.VarChar(100)
+  descriptionZh  String?   @db.Text
+  descriptionEn  String?   @db.Text
+  descriptionRu  String?   @db.Text
+  sortOrder      Int       @default(0)
+  isEnabled      Boolean   @default(true)
+  seoTitle       String?   @db.VarChar(255)
+  seoKeywords    String?   @db.VarChar(500)
+  seoDescription String?   @db.VarChar(500)
+  createdById    BigInt?
+  updatedById    BigInt?
+  createdAt      DateTime  @default(now()) @db.DateTime(3)
+  updatedAt      DateTime  @updatedAt @db.DateTime(3)
+  deletedAt      DateTime? @db.DateTime(3)
+
+  logoMedia     MediaAsset?     @relation("BrandLogoMedia", fields: [logoMediaId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  series        VehicleSeries[]
+  vehicles      Vehicle[]
+  vehicleModels VehicleModel[]
+
+  @@index([isEnabled, sortOrder])
+  @@map("brands")
+}
+
+model VehicleSeries {
+  id            BigInt    @id @default(autoincrement())
+  brandId       BigInt
+  nameZh        String    @db.VarChar(120)
+  nameEn        String    @db.VarChar(120)
+  nameRu        String?   @db.VarChar(120)
+  slug          String    @db.VarChar(191)
+  descriptionZh String?   @db.Text
+  descriptionEn String?   @db.Text
+  descriptionRu String?   @db.Text
+  sortOrder     Int       @default(0)
+  isEnabled     Boolean   @default(true)
+  createdById   BigInt?
+  updatedById   BigInt?
+  createdAt     DateTime  @default(now()) @db.DateTime(3)
+  updatedAt     DateTime  @updatedAt @db.DateTime(3)
+  deletedAt     DateTime? @db.DateTime(3)
+
+  brand    Brand          @relation(fields: [brandId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  models   VehicleModel[]
+  vehicles Vehicle[]
+
+  @@unique([brandId, slug])
+  @@index([brandId, isEnabled, sortOrder])
+  @@map("vehicle_series")
+}
+
+model VehicleModel {
+  id            BigInt    @id @default(autoincrement())
+  brandId       BigInt
+  seriesId      BigInt
+  nameZh        String    @db.VarChar(120)
+  nameEn        String    @db.VarChar(120)
+  nameRu        String?   @db.VarChar(120)
+  slug          String    @db.VarChar(191)
+  year          Int?
+  descriptionZh String?   @db.Text
+  descriptionEn String?   @db.Text
+  descriptionRu String?   @db.Text
+  sortOrder     Int       @default(0)
+  isEnabled     Boolean   @default(true)
+  createdById   BigInt?
+  updatedById   BigInt?
+  createdAt     DateTime  @default(now()) @db.DateTime(3)
+  updatedAt     DateTime  @updatedAt @db.DateTime(3)
+  deletedAt     DateTime? @db.DateTime(3)
+
+  brand    Brand         @relation(fields: [brandId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  series   VehicleSeries @relation(fields: [seriesId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  vehicles Vehicle[]
+
+  @@unique([seriesId, slug, year])
+  @@index([brandId, isEnabled])
+  @@index([seriesId, isEnabled, sortOrder])
+  @@map("vehicle_models")
+}
+
+model VehicleCategory {
+  id            BigInt    @id @default(autoincrement())
+  nameZh        String    @db.VarChar(100)
+  nameEn        String    @db.VarChar(100)
+  nameRu        String?   @db.VarChar(100)
+  slug          String    @unique @db.VarChar(100)
+  descriptionZh String?   @db.Text
+  descriptionEn String?   @db.Text
+  descriptionRu String?   @db.Text
+  sortOrder     Int       @default(0)
+  isEnabled     Boolean   @default(true)
+  createdById   BigInt?
+  updatedById   BigInt?
+  createdAt     DateTime  @default(now()) @db.DateTime(3)
+  updatedAt     DateTime  @updatedAt @db.DateTime(3)
+  deletedAt     DateTime? @db.DateTime(3)
+
+  vehicles Vehicle[]
+
+  @@index([isEnabled, sortOrder])
+  @@map("vehicle_categories")
+}
+
+model Vehicle {
+  id                 BigInt            @id @default(autoincrement())
+  legacyId           String?           @unique @db.VarChar(100)
+  stockNo            String            @unique @db.VarChar(100)
+  vin                String?           @unique @db.VarChar(64)
+  type               VehicleType
+  nameZh             String            @db.VarChar(255)
+  nameEn             String            @db.VarChar(255)
+  nameRu             String?           @db.VarChar(255)
+  slug               String            @unique @db.VarChar(191)
+  brandId            BigInt
+  seriesId           BigInt?
+  modelId            BigInt?
+  categoryId         BigInt?
+  category           String?           @db.VarChar(100)
+  year               Int
+  manufactureDate    DateTime?         @db.Date
+  registrationDate   DateTime?         @db.Date
+  price              Decimal           @db.Decimal(14, 2)
+  originalPrice      Decimal?          @db.Decimal(14, 2)
+  currency           Currency          @default(CNY)
+  showPrice          Boolean           @default(true)
+  showInquiryPrice   Boolean           @default(false)
+  priceNote          String?           @db.VarChar(500)
+  mileage            Int               @default(0)
+  mileageUnit        MileageUnit       @default(KM)
+  displacement       Decimal?          @db.Decimal(5, 2)
+  fuelType           String?           @db.VarChar(100)
+  transmission       String?           @db.VarChar(100)
+  driveType          String?           @db.VarChar(100)
+  bodyType           String?           @db.VarChar(100)
+  doors              Int?
+  seats              Int?
+  exteriorColor      String?           @db.VarChar(100)
+  interiorColor      String?           @db.VarChar(100)
+  engineModel        String?           @db.VarChar(120)
+  enginePower        String?           @db.VarChar(120)
+  batteryCapacity    Decimal?          @db.Decimal(8, 2)
+  rangeKm            Int?
+  emissionStandard   String?           @db.VarChar(100)
+  dimensions         String?           @db.VarChar(120)
+  curbWeightKg       Int?
+  location           String?           @db.VarChar(255)
+  shortDescriptionZh String?           @db.Text
+  shortDescriptionEn String?           @db.Text
+  shortDescriptionRu String?           @db.Text
+  descriptionZh      String?           @db.LongText
+  descriptionEn      String?           @db.LongText
+  descriptionRu      String?           @db.LongText
+  highlights         Json?
+  specifications     Json?
+  status             ContentStatus     @default(DRAFT)
+  saleStatus         VehicleSaleStatus @default(AVAILABLE)
+  isFeatured         Boolean           @default(false)
+  isHomepage         Boolean           @default(false)
+  isHot              Boolean           @default(false)
+  sortOrder          Int               @default(0)
+  publishedAt        DateTime?         @db.DateTime(3)
+  scheduledAt        DateTime?         @db.DateTime(3)
+  seoTitle           String?           @db.VarChar(255)
+  seoKeywords        String?           @db.VarChar(500)
+  seoDescription     String?           @db.VarChar(500)
+  canonicalUrl       String?           @db.VarChar(1024)
+  coverMediaId       BigInt?
+  createdById        BigInt?
+  updatedById        BigInt?
+  createdAt          DateTime          @default(now()) @db.DateTime(3)
+  updatedAt          DateTime          @updatedAt @db.DateTime(3)
+  deletedAt          DateTime?         @db.DateTime(3)
+
+  brand           Brand                    @relation(fields: [brandId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  series          VehicleSeries?           @relation(fields: [seriesId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  model           VehicleModel?            @relation(fields: [modelId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  categoryRef     VehicleCategory?         @relation(fields: [categoryId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  coverMedia      MediaAsset?              @relation("VehicleCoverMedia", fields: [coverMediaId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  tags            VehicleTagRelation[]
+  media           VehicleMedia[]
+  inquiries       Inquiry[]
+  recommendations HomepageRecommendation[]
+
+  @@index([status, deletedAt])
+  @@index([saleStatus, status])
+  @@index([type, status])
+  @@index([brandId, status])
+  @@index([seriesId, status])
+  @@index([modelId, status])
+  @@index([categoryId, status])
+  @@index([createdAt])
+  @@index([publishedAt])
+  @@index([deletedAt, publishedAt])
+  @@index([isFeatured, status, sortOrder])
+  @@map("vehicles")
+}
+
+model VehicleTag {
+  id          BigInt   @id @default(autoincrement())
+  nameZh      String   @db.VarChar(100)
+  nameEn      String   @db.VarChar(100)
+  nameRu      String?  @db.VarChar(100)
+  slug        String   @unique @db.VarChar(100)
+  color       String?  @db.VarChar(32)
+  isEnabled   Boolean  @default(true)
+  createdById BigInt?
+  updatedById BigInt?
+  createdAt   DateTime @default(now()) @db.DateTime(3)
+  updatedAt   DateTime @updatedAt @db.DateTime(3)
+
+  vehicles VehicleTagRelation[]
+
+  @@index([isEnabled])
+  @@map("vehicle_tags")
+}
+
+model VehicleTagRelation {
+  vehicleId BigInt
+  tagId     BigInt
+  createdAt DateTime @default(now()) @db.DateTime(3)
+
+  vehicle Vehicle    @relation(fields: [vehicleId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  tag     VehicleTag @relation(fields: [tagId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@id([vehicleId, tagId])
+  @@index([tagId])
+  @@map("vehicle_tag_relations")
+}
+
+model VehicleMedia {
+  id        BigInt           @id @default(autoincrement())
+  vehicleId BigInt
+  mediaId   BigInt
+  type      VehicleMediaType @default(GALLERY)
+  altZh     String?          @db.VarChar(255)
+  altEn     String?          @db.VarChar(255)
+  altRu     String?          @db.VarChar(255)
+  sortOrder Int              @default(0)
+  isCover   Boolean          @default(false)
+  createdAt DateTime         @default(now()) @db.DateTime(3)
+
+  vehicle Vehicle    @relation(fields: [vehicleId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  media   MediaAsset @relation(fields: [mediaId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+
+  @@unique([vehicleId, mediaId, type])
+  @@index([vehicleId, type, sortOrder])
+  @@index([mediaId])
+  @@map("vehicle_media")
+}
+
+model MediaFolder {
+  id          BigInt    @id @default(autoincrement())
+  parentId    BigInt?
+  name        String    @db.VarChar(120)
+  slug        String    @db.VarChar(120)
+  sortOrder   Int       @default(0)
+  createdById BigInt?
+  updatedById BigInt?
+  createdAt   DateTime  @default(now()) @db.DateTime(3)
+  updatedAt   DateTime  @updatedAt @db.DateTime(3)
+  deletedAt   DateTime? @db.DateTime(3)
+
+  parent   MediaFolder?  @relation("MediaFolderTree", fields: [parentId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  children MediaFolder[] @relation("MediaFolderTree")
+  assets   MediaAsset[]
+
+  @@unique([parentId, slug])
+  @@index([parentId, sortOrder])
+  @@map("media_folders")
+}
+
+model MediaAsset {
+  id                 BigInt           @id @default(autoincrement())
+  folderId           BigInt?
+  driver             StorageDriver
+  bucket             String?          @db.VarChar(100)
+  objectKey          String           @db.VarChar(512)
+  url                String           @db.VarChar(2048)
+  thumbnailObjectKey String?          @db.VarChar(512)
+  thumbnailUrl       String?          @db.VarChar(2048)
+  webpObjectKey      String?          @db.VarChar(512)
+  webpUrl            String?          @db.VarChar(2048)
+  originalName       String?          @db.VarChar(255)
+  filename           String           @db.VarChar(255)
+  extension          String?          @db.VarChar(32)
+  mimeType           String           @db.VarChar(191)
+  sizeBytes          BigInt
+  width              Int?
+  height             Int?
+  durationSeconds    Int?
+  checksum           String?          @db.Char(64)
+  altZh              String?          @db.VarChar(255)
+  altEn              String?          @db.VarChar(255)
+  altRu              String?          @db.VarChar(255)
+  status             MediaAssetStatus @default(ACTIVE)
+  createdById        BigInt?
+  updatedById        BigInt?
+  createdAt          DateTime         @default(now()) @db.DateTime(3)
+  updatedAt          DateTime         @updatedAt @db.DateTime(3)
+  deletedAt          DateTime?        @db.DateTime(3)
+
+  folder              MediaFolder?      @relation(fields: [folderId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  brandLogos          Brand[]           @relation("BrandLogoMedia")
+  pageOgImages        Page[]            @relation("PageOgMedia")
+  homepageBackgrounds HomepageSection[] @relation("HomepageBackgroundMedia")
+  bannerDesktopImages Banner[]          @relation("BannerDesktopMedia")
+  bannerMobileImages  Banner[]          @relation("BannerMobileMedia")
+  featureImages       FeatureItem[]     @relation("FeatureImageMedia")
+  vehicleCovers       Vehicle[]         @relation("VehicleCoverMedia")
+  vehicleMedia        VehicleMedia[]
+  uploadRecord        MediaUploadRecord? @relation("MediaUploadRecordAsset")
+
+  @@unique([driver, bucket, objectKey])
+  @@index([folderId, createdAt])
+  @@index([mimeType, createdAt])
+  @@index([status, deletedAt])
+  @@index([checksum])
+  @@map("media_assets")
+}
+
+model MediaUploadRecord {
+  id           BigInt            @id @default(autoincrement())
+  mediaAssetId BigInt?           @unique
+  createdById  BigInt?
+  folderId     BigInt?
+  originalName String             @db.VarChar(255)
+  mimeType     String?            @db.VarChar(191)
+  sizeBytes    BigInt             @default(0)
+  status       MediaUploadStatus  @default(PROCESSING)
+  errorMessage String?            @db.VarChar(1000)
+  durationMs   Int?
+  createdAt    DateTime           @default(now()) @db.DateTime(3)
+  completedAt  DateTime?          @db.DateTime(3)
+
+  mediaAsset MediaAsset? @relation("MediaUploadRecordAsset", fields: [mediaAssetId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  createdBy  AdminUser?  @relation("MediaUploadRecordActor", fields: [createdById], references: [id], onDelete: SetNull, onUpdate: Cascade)
+
+  @@index([status, createdAt])
+  @@index([createdById, createdAt])
+  @@index([folderId, createdAt])
+  @@map("media_upload_records")
+}
+
+model Inquiry {
+  id                BigInt        @id @default(autoincrement())
+  vehicleId         BigInt?
+  customerId        BigInt?
+  name              String        @db.VarChar(120)
+  email             String?       @db.VarChar(191)
+  phone             String?       @db.VarChar(64)
+  whatsapp          String?       @db.VarChar(64)
+  country           String?       @db.VarChar(100)
+  companyName       String?       @db.VarChar(191)
+  preferredLanguage String?       @db.VarChar(16)
+  message           String        @db.Text
+  source            InquirySource @default(WEBSITE)
+  sourcePage        String?       @db.VarChar(2048)
+  utmSource         String?       @db.VarChar(255)
+  utmMedium         String?       @db.VarChar(255)
+  utmCampaign       String?       @db.VarChar(255)
+  utmTerm           String?       @db.VarChar(255)
+  utmContent        String?       @db.VarChar(255)
+  fingerprint       String?       @db.Char(64)
+  status            InquiryStatus @default(NEW)
+  clientIp          String?       @db.VarChar(45)
+  userAgent         String?       @db.VarChar(1000)
+  referrer          String?       @db.VarChar(2048)
+  createdById       BigInt?
+  updatedById       BigInt?
+  createdAt         DateTime      @default(now()) @db.DateTime(3)
+  updatedAt         DateTime      @updatedAt @db.DateTime(3)
+  deletedAt         DateTime?     @db.DateTime(3)
+
+  vehicle     Vehicle?            @relation(fields: [vehicleId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  customer    Customer?           @relation(fields: [customerId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  notes       InquiryNote[]
+  assignments InquiryAssignment[]
+
+  @@index([status, createdAt])
+  @@index([deletedAt, createdAt])
+  @@index([vehicleId, createdAt])
+  @@index([customerId, createdAt])
+  @@index([email])
+  @@index([phone])
+  @@index([clientIp, createdAt])
+  @@index([fingerprint, createdAt])
+  @@map("inquiries")
+}
+
+model InquiryNote {
+  id         BigInt    @id @default(autoincrement())
+  inquiryId  BigInt
+  authorId   BigInt
+  content    String    @db.Text
+  isInternal Boolean   @default(true)
+  createdAt  DateTime  @default(now()) @db.DateTime(3)
+  updatedAt  DateTime  @updatedAt @db.DateTime(3)
+  deletedAt  DateTime? @db.DateTime(3)
+
+  inquiry Inquiry   @relation(fields: [inquiryId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  author  AdminUser @relation("InquiryNoteAuthor", fields: [authorId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+
+  @@index([inquiryId, createdAt])
+  @@index([authorId])
+  @@map("inquiry_notes")
+}
+
+model InquiryAssignment {
+  id           BigInt    @id @default(autoincrement())
+  inquiryId    BigInt
+  assignedToId BigInt
+  assignedById BigInt
+  note         String?   @db.VarChar(500)
+  assignedAt   DateTime  @default(now()) @db.DateTime(3)
+  endedAt      DateTime? @db.DateTime(3)
+
+  inquiry    Inquiry   @relation(fields: [inquiryId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  assignedTo AdminUser @relation("InquiryAssignee", fields: [assignedToId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  assignedBy AdminUser @relation("InquiryAssignedBy", fields: [assignedById], references: [id], onDelete: Restrict, onUpdate: Cascade)
+
+  @@index([inquiryId, assignedAt])
+  @@index([assignedToId, endedAt])
+  @@index([assignedById])
+  @@map("inquiry_assignments")
+}

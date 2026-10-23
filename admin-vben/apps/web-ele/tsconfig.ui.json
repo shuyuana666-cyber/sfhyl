@@ -1,0 +1,15 @@
+{
+  "extends": "./tsconfig.json",
+  "include": [
+    "src/views/sfhyl/permission/*.vue",
+    "src/views/sfhyl/system/*.vue",
+    "src/views/sfhyl/ui-route-meta.d.ts",
+    "src/views/sfhyl/homepage/*.vue",
+    "src/views/sfhyl/homepage/useHomepageContentEditor.ts",
+    "src/views/sfhyl/vehicle/catalog.vue",
+    "src/sfhyl/legacy/composables/usePageLoad.ts",
+    "src/sfhyl/legacy/components/PageLoadState/index.vue",
+    "src/sfhyl/legacy/utils/confirm-action.ts"
+  ],
+  "exclude": []
+}

@@ -1,0 +1,23 @@
+{
+  "generator": "Built-in imagegen",
+  "purpose": "Illustrative service scenes, not documentary photographs of the company",
+  "version": 1,
+  "images": [
+    {
+      "key": "quality",
+      "prompt": "Create a single horizontal 16:9 commercial editorial photograph for a Chinese vehicle export company's service advantages. Natural daylight, restrained neutral gray and white palette with small burnt orange accents, realistic people and automotive surroundings, professional reliable atmosphere. Medium-wide shot, main subject inside central 70% safe area, clean balanced composition suitable for cropping. No visible text, letters, numbers, logos, trademarks, watermarks, graphic overlays or borders. A qualified automotive technician in gray workwear inspecting a modern unbranded passenger car in a clean inspection bay, using a handheld diagnostic tablet and checking the vehicle condition, equipment and checklist. Car and technician clearly visible, tablet display abstract without readable content."
+    },
+    {
+      "key": "shipping",
+      "prompt": "Create a single horizontal 16:9 commercial editorial photograph for a Chinese vehicle export company's service advantages. Natural daylight, restrained neutral gray and white palette with small burnt orange accents, realistic people and automotive surroundings, professional reliable atmosphere. Medium-wide shot, main subject inside central 70% safe area, clean balanced composition suitable for cropping. No visible text, letters, numbers, logos, trademarks, watermarks, graphic overlays or borders. A car transporter carrying modern unbranded passenger vehicles in an export port with shipping containers and distant port cranes. Clean orderly logistics scene, transporter central foreground, subtle orange safety details, daylight without dramatic effects."
+    },
+    {
+      "key": "consulting",
+      "prompt": "Create a single horizontal 16:9 commercial editorial photograph for a Chinese vehicle export company's service advantages. Natural daylight, restrained neutral gray and white palette with small burnt orange accents, realistic people and automotive surroundings, professional reliable atmosphere. Medium-wide shot, main subject inside central 70% safe area, clean balanced composition suitable for cropping. No visible text, letters, numbers, logos, trademarks, watermarks, graphic overlays or borders. Two professional procurement staff discussing vehicle selection at a tidy bright office desk, using a laptop and vehicle reference documents with abstract unreadable content. A modern unbranded car visible through a window in the background. Friendly focused expressions, candid commercial photograph."
+    },
+    {
+      "key": "support",
+      "prompt": "Create a single horizontal 16:9 commercial editorial photograph for a Chinese vehicle export company's service advantages. Natural daylight, restrained neutral gray and white palette with small burnt orange accents, realistic people and automotive surroundings, professional reliable atmosphere. Medium-wide shot, main subject inside central 70% safe area, clean balanced composition suitable for cropping. No visible text, letters, numbers, logos, trademarks, watermarks, graphic overlays or borders. A qualified automotive service technician examining clean replacement car components on a tidy workshop bench next to a modern unbranded vehicle. Diagnostic consultation and after-sales support atmosphere, gray workwear with a subtle orange detail, realistic components and hands."
+    }
+  ]
+}

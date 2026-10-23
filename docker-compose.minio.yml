@@ -1,0 +1,10 @@
+# Start with: pnpm stack:up:minio
+# The base Compose file also supports local storage without the MinIO profile.
+services:
+  api:
+    environment:
+      STORAGE_DRIVER: minio
+      STORAGE_PUBLIC_URL: ${STORAGE_PUBLIC_URL:?Set STORAGE_PUBLIC_URL to the public /media URL}
+    depends_on:
+      minio-init:
+        condition: service_completed_successfully

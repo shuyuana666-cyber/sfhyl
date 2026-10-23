@@ -1,0 +1,301 @@
+{
+  "home": {
+    "heroSlides": [
+      {
+        "image": "/about/hero-03.jpg",
+        "title": "SFHYL.CN logistics yard",
+        "active": true
+      },
+      {
+        "image": "/about/hero-01.jpg",
+        "title": "Vehicle parking yard",
+        "active": false
+      },
+      {
+        "image": "/about/hero-02.jpg",
+        "title": "Export vehicle inspection",
+        "active": false
+      }
+    ],
+    "featuredVideo": {
+      "src": "/about/about-video.mp4",
+      "poster": "/about/hero-02.jpg",
+        "title": "SFHYL.CN vehicle export media",
+        "badge": "SFHYL.CN"
+    },
+    "rates": {
+      "cnyRub": "₽11.31",
+      "cnyUsd": "$0.15",
+      "cnyEur": "€0.13"
+    },
+    "vehicles": [
+      {
+        "id": "c206-260706-0108",
+        "brand": "HAVAL",
+        "title": "Haval H6 2023 модель, версия Guochao, 1.5T автомат, городская версия",
+        "image": "/cars/car-01.jpg",
+        "price": 99300,
+        "rub": "1,123,013 ₽",
+        "year": 2023,
+        "mileage": 19000
+      },
+      {
+        "id": "c206-260704-0107",
+        "brand": "TOYOTA",
+        "title": "Toyota Corolla 2022 CVT 1.2T Pioneer PLUS",
+        "image": "/cars/car-02.jpg",
+        "price": 94500,
+        "rub": "1,068,729 ₽",
+        "year": 2022,
+        "mileage": 11000
+      },
+      {
+        "id": "c206-260703-0106",
+        "brand": "MAZDA",
+        "title": "Mazda CX-5 2022 года, 2.0L, автоматическая коробка передач, передний привод, модель Zhi Shang",
+        "image": "/cars/car-03.jpg",
+        "price": 139800,
+        "rub": "1,581,040 ₽",
+        "year": 2022,
+        "mileage": 40000
+      },
+      {
+        "id": "c206-260703-0105",
+        "brand": "BMW",
+        "title": "BMW X1 2023 модель sDrive20Li X с дизайнерским пакетом",
+        "image": "/cars/car-04.jpg",
+        "price": 234500,
+        "rub": "2,652,031 ₽",
+        "year": 2023,
+        "mileage": 29500
+      },
+      {
+        "id": "c206-260703-0104",
+        "brand": "AUDI",
+        "title": "Audi A3 2022 года, A3L Limousine 35 TFSI, стильная спортивная версия",
+        "image": "/cars/car-05.jpg",
+        "price": 138800,
+        "rub": "1,569,731 ₽",
+        "year": 2022,
+        "mileage": 26297
+      },
+      {
+        "id": "c206-260703-0103",
+        "brand": "JETOUR",
+        "title": "Jetour X70PLUS",
+        "image": "/cars/car-06.jpg",
+        "price": 92300,
+        "rub": "1,043,848 ₽",
+        "year": 2022,
+        "mileage": 44000
+      },
+      {
+        "id": "c207-260703-0043",
+        "brand": "JETOUR",
+        "title": "Jetour X70 PLUS 2022, 1.5T CVT, 7 мест, версия Shan ...",
+        "image": "/cars/car-07.jpg",
+        "price": 99500,
+        "rub": "1,125,275 ₽",
+        "year": 2022,
+        "mileage": 47000
+      },
+      {
+        "id": "c207-260703-0042",
+        "brand": "JETOUR",
+        "title": "Jetour X70 2023 года, 1.5TDCT, Brave PLUS, 7 мест",
+        "image": "/cars/car-08.jpg",
+        "price": 111500,
+        "rub": "1,260,987 ₽",
+        "year": 2023,
+        "mileage": 38760
+      },
+      {
+        "id": "c207-260703-0041",
+        "brand": "BMW",
+        "title": "Дизайн BMW X1 sDrive20Li X",
+        "image": "/cars/car-09.jpg",
+        "price": 226500,
+        "rub": "2,561,556 ₽",
+        "year": 2023,
+        "mileage": 30155
+      },
+      {
+        "id": "c207-260703-0040",
+        "brand": "AUDI",
+        "title": "2023 модель Audi A3L Стильный и динамичный",
+        "image": "/cars/car-10.jpg",
+        "price": 161500,
+        "rub": "1,826,452 ₽",
+        "year": 2023,
+        "mileage": 40000
+      },
+      {
+        "id": "c207-260703-0039",
+        "brand": "JETOUR",
+        "title": "2023 год модель JETOUR X70 PLUS Brave семиместный",
+        "image": "/cars/car-11.jpg",
+        "price": 94500,
+        "rub": "1,068,729 ₽",
+        "year": 2023,
+        "mileage": 62000
+      },
+      {
+        "id": "c207-260701-0038",
+        "brand": "VOLKSWAGEN",
+        "title": "Volkswagen Golf 2021 280TSI R-line",
+        "image": "/cars/car-12.jpg",
+        "price": 142300,
+        "rub": "1,609,313 ₽",
+        "year": 2021,
+        "mileage": 21500
+      },
+      {
+        "id": "c207-260701-0037",
+        "brand": "BMW",
+        "title": "BMW X1 2023 года выпуска sDrive20Li с пакетом дизайна X",
+        "image": "/cars/car-13.jpg",
+        "price": 242300,
+        "rub": "2,740,243 ₽",
+        "year": 2023,
+        "mileage": 685378
+      },
+      {
+        "id": "c207-260630-0035",
+        "brand": "AUDI",
+        "title": "Audi Q3 2022 года, стильная и динамичная версия",
+        "image": "/cars/car-14.jpg",
+        "price": 190000,
+        "rub": "2,148,767 ₽",
+        "year": 2022,
+        "mileage": 48000
+      },
+      {
+        "id": "c207-260630-0036",
+        "brand": "AUDI",
+        "title": "Audi A3L 35TFSI стильная спортивная версия 2022 года",
+        "image": "/cars/car-15.jpg",
+        "price": 169500,
+        "rub": "1,916,926 ₽",
+        "year": 2022,
+        "mileage": 32000
+      },
+      {
+        "id": "c207-260627-0034",
+        "brand": "MAZDA",
+        "title": "Mazda CX-4 2021 года, 2.0L, автомат, передний привод, версия Blue Sky Vitality",
+        "image": "/cars/car-16.jpg",
+        "price": 125300,
+        "rub": "1,417,055 ₽",
+        "year": 2021,
+        "mileage": 13000
+      }
+    ]
+  },
+  "about": {
+    "heroSlides": [
+      {
+        "image": "/about/hero-03.jpg",
+        "title": "SFHYL.CN parking and logistics yard",
+        "active": true
+      },
+      {
+        "image": "/about/hero-01.jpg",
+        "title": "SFHYL.CN summer parking yard",
+        "active": false
+      },
+      {
+        "image": "/about/hero-02.jpg",
+        "title": "SFHYL.CN vehicle yard",
+        "active": false
+      },
+      {
+        "image": "/about/hero-04.jpg",
+        "title": "SFHYL.CN banner",
+        "active": false
+      }
+    ],
+    "paragraphs": [
+      "Shenyang Zhengguxing Trading Co., Ltd, специализируется на экспорте китайских автомобилей в море!",
+      "SFHYL.CN является надёжным исполнителем и долгосрочным партнёром в экспортной торговле автомобилями из Китая.",
+      "Мы имеем полную квалификацию для экспорта автомобилей и торговли транспортными средствами и можем осуществлять международные расчеты со всеми типами контрагентов!",
+      "После большого количества бизнес - тренингов, мы понимаем все типы транзакций и торговые процессы и работаем со стандартизированными процессами и специализированными системами, чтобы помочь партнерам избежать неэффективной коммуникации и повысить эффективность!",
+      "В 2025 году экспортировано всего 3100 автомобилей!"
+    ],
+    "aboutVideo": {
+      "src": "/about/about-video.mp4",
+      "poster": "/about/hero-02.jpg",
+      "title": "Автомобиль из Китая",
+      "badge": "SFHYL.CN"
+    },
+    "transportImages": [
+      {
+        "image": "/about/transport-01.jpg",
+        "title": "Транспортировка 1"
+      },
+      {
+        "image": "/about/transport-02.jpg",
+        "title": "Транспортировка 2"
+      },
+      {
+        "image": "/about/transport-03.jpg",
+        "title": "Транспортировка 3"
+      },
+      {
+        "image": "/about/transport-04.jpg",
+        "title": "Транспортировка 4"
+      },
+      {
+        "image": "/about/transport-05.jpg",
+        "title": "Транспортировка 5"
+      }
+    ],
+    "staff": [
+      {
+        "name": "Лиза",
+        "image": "/about/staff-01.png"
+      },
+      {
+        "name": "Алёна",
+        "image": "/about/staff-02.jpg"
+      },
+      {
+        "name": "Александр",
+        "image": "/about/staff-03.jpg"
+      },
+      {
+        "name": "Соня",
+        "image": "/about/staff-04.jpg"
+      },
+      {
+        "name": "Володя",
+        "image": "/about/staff-05.jpg"
+      }
+    ],
+    "videos": [
+      {
+        "poster": "/about/video-01.jpg",
+        "src": "/about/video-01.mp4",
+        "title": "Видео 1"
+      },
+      {
+        "poster": "/about/video-02.jpg",
+        "src": "/about/video-02.mp4",
+        "title": "Видео 2"
+      },
+      {
+        "poster": "/about/video-03.jpg",
+        "src": "/about/video-03.mp4",
+        "title": "Видео 3"
+      }
+    ],
+    "footerAddresses": [
+      "Адрес главного офиса в Шэньяне Комната 704, здание Тунфан, дом 1-8, улица Хуннаньсань, город Шэньян",
+      "Адрес офиса отдела разработки в Шэньяне Комната 238, блок C, сообщество Чуанкэ, новый район Шэнбэй, город Шэньян",
+      "Адрес офиса в Суйфэньхэ Дом 26, улица Хуанхэ, город Суйфэньхэ, город Муданьцзян, провинция Хэйлунцзян",
+      "Адрес парковки №1 в Суйфэньхэ Примерно в 240 метрах к северо-востоку от международного автовокзала, улица Уссури, город Суйфэньхэ, город Муданьцзян, провинция Хэйлунцзян, гараж Анту №1",
+      "Адрес парковки №2 в Суйфэньхэ Дом 26, улица Хуанхэ, город Суйфэньхэ, город Муданьцзян, провинция Хэйлунцзян",
+      "Адрес офиса в Харбине Комната 1314, корпус 4, комплекс Хуарун Чжиди, район Наньган, город Харбин, провинция Хэйлунцзян",
+      "Адрес парковки в Харбине Дом 650, улица аэропорта Цзянлу, поселок Синьфа, район Даоли, город Харбин, провинция Хэйлунцзян"
+    ]
+  }
+}
