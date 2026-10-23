@@ -163,4 +163,4 @@ docker compose exec -T api node scripts/infrastructure.mjs check --write-check
 - 只回退上传驱动不会自动回退历史媒体记录。需要迁回本地时，准备 `STORAGE_DRIVER=local`、正确的本地目录及 `/uploads` 公开 URL，然后运行 `node scripts/migrate-media-to-local.mjs --env FILE` 预览，加 `--apply` 执行。该命令处理环境内所有 `MINIO` 媒体，包含新上传素材；核对范围后在维护窗口执行，源对象保留。
 - 程序回退使用原发布回退流程；数据库与文件恢复需使用对应的一组备份。切换前后都要保留实际文件，避免仅恢复数据库后引用丢失。
 
-本次源码实施未运行真实业务媒体迁移，也未修改实际 `.env`。Docker 守护进程未运行，完整容器启动与真实 Redis/S3 读写尚待环境启用后执行上述检查。
+2026-10-24 已在生产完成 1.0.1 容器部署、Redis/MinIO 读写检查及 164 条素材迁移，270 个媒体对象和 8 个视频分段请求检查通过，详情见 [部署记录](deployment-2026-10-24.md)。其他环境需要按本文配置和迁移。历史默认品牌图标的记录可能为 `LOCAL` + `bucket=website`，实际文件在官网静态目录；迁移前需将这些既有文件按 `default-brand-icons/<文件名>` 组织为第二源目录，并只读挂载到迁移容器的 `/app/storage/uploads/`，参见部署记录。预览只统计记录和对象，执行迁移时才读取和验证源文件。

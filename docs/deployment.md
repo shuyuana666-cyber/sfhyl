@@ -1,6 +1,6 @@
-# SFHYL 部署手册（2026-10-12）
+# SFHYL 部署手册（2026-10-24）
 
-本项目由 React 官网、Vben 管理后台、NestJS API、MySQL、Redis 和 MinIO 组成。当前生产媒体使用 API 本地持久存储，公开地址为 `/uploads/`；原 MinIO 服务及对象保留用于兼容和回退。迁移数据时，数据库和对应存储对象必须一起迁移。`public/about`、`public/cars` 和 `public/brand-icons` 是首页及车源默认素材；品牌图标随官网静态构建进入发布包。
+本项目由 React 官网、Vben 管理后台、NestJS API、MySQL、Redis 和 MinIO 组成。当前生产版本为 1.0.1，媒体已迁入 MinIO，公开地址为 `/media/`，Redis 用于公开数据缓存和共享限流；原本地持久卷及 `/uploads/` 保留供兼容和回退。迁移数据时，数据库和对应存储对象必须一起迁移。`public/about`、`public/cars` 和 `public/brand-icons` 是首页及车源默认素材；品牌图标随官网静态构建进入发布包。
 
 1.0.1 新增 Redis 共享限流、环境缓存隔离、MinIO/S3 参数、bucket 初始化与可校验的本地媒体迁移。生产环境示例以 MinIO 为目标；升级代码后需按 [1.0.1 接入步骤](redis-minio-1.0.1.md) 启用及迁移。激活脚本根据 `STORAGE_DRIVER` 和 `MINIO_COMPOSE_ENABLED` 选择项目自带 MinIO 或外部 S3，使用 MinIO overlay 时等待 bucket 初始化成功再启动 API。历史线上配置和数据不会随源码编辑自动切换。
 
@@ -57,4 +57,4 @@ SFHYL_ROOT=/opt/sfhyl-platform /opt/sfhyl-platform/current/deploy/scripts/restor
 
 ## 当前验证范围
 
-2026-10-12 已将本机当前程序和完整数据库部署至生产，当前发布目录为 `/opt/sfhyl-platform/releases/20261012-local-update`。32 张表的规范化内容哈希与本地一致，保留 164 条素材、28 条车辆记录，其中 154 条活动素材、9 辆未删除车辆、6 辆已发布车辆。252 个存储对象和 8 个视频分段请求均验证通过，官网及后台入口浏览器检查正常。完整恢复演练及真实询盘投递仍未执行。详情见 [本次部署记录](deployment-2026-10-12.md)。首次程序部署及此前素材同步历史见 [2026-10-01 部署](deployment-2026-10-01.md) 和 [本地素材同步](media-sync-2026-10-01.md)。
+2026-10-24 已发布 GitHub 标签和 Release `v1.0.1`，当前生产目录为 `/opt/sfhyl-platform/releases/20261024-v1.0.1`。保留生产数据库和凭据，迁移 164 条素材、270 个对象至 MinIO，31 张非媒体表及媒体保留字段哈希一致；启动后的 32 张表与迁移结果一致。官网、两个后台入口、公开 API、全部媒体 HEAD 和 8 个视频分段请求通过检查，Redis 与 MinIO 读写正常，生产缓存和限流键已产生。升级前数据库、本地存储、MinIO 数据、静态品牌图标及配置已备份。完整恢复演练及真实询盘投递仍未执行。详情见 [本次部署记录](deployment-2026-10-24.md)。此前完整数据同步见 [2026-10-12 部署](deployment-2026-10-12.md)，首次程序部署见 [2026-10-01 部署](deployment-2026-10-01.md)。
